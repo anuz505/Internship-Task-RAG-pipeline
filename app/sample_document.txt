@@ -1,0 +1,111 @@
+
+Product Documentation: AI-Powered Interview Scheduler
+
+Overview:
+Our AI-powered interview scheduling platform streamlines the hiring process by automating 
+interview coordination, candidate communication, and schedule optimization.
+
+Key Features:
+1. Automated Scheduling: Intelligent matching of candidate and interviewer availability
+2. Multi-timezone Support: Seamlessly coordinate across different time zones
+3. Calendar Integration: Sync with Google Calendar, Outlook, and other major platforms
+4. AI-Powered Recommendations: Smart suggestions for optimal interview times
+5. Candidate Self-Service: Allow candidates to pick from available slots
+
+Technical Specifications:
+- Built with FastAPI and Python 3.11+
+- Uses PostgreSQL for data persistence
+- Redis for caching and session management
+- Pinecone for vector similarity search
+- Groq LLM for intelligent conversation
+- RESTful API architecture
+
+Interview Types Supported:
+- Phone Screening (30 minutes)
+- Technical Interview (60 minutes)
+- Behavioral Interview (45 minutes)
+- Final Round Interview (90 minutes)
+
+Contact Information:
+For support, email: support@example.com
+Website: https://interview-scheduler.example.com
+
+Current Hiring Roles for AI Engineer Position:
+
+1) Senior AI Engineer - Full-time
+    - Seniority: Senior (5+ years)
+    - Location: Remote or Hybrid
+    - Responsibilities:
+      * Design and implement machine learning models for interview matching algorithms
+      * Develop NLP pipelines for resume parsing and candidate-job matching
+      * Build recommendation systems for optimal interview scheduling
+      * Work with LLMs for conversational AI and candidate screening
+      * Optimize embedding models and vector search for semantic matching
+    - Tech stack: Python, PyTorch/TensorFlow, Transformers, LangChain, Cohere, OpenAI API
+    - Requirements: PhD or Masters in CS/AI, strong publication record, experience with production ML systems
+
+2) ML Engineer (Embeddings & RAG) - Full-time
+    - Seniority: Mid to Senior (3+ years)
+    - Location: Remote
+    - Responsibilities:
+      * Design and optimize RAG (Retrieval-Augmented Generation) pipelines
+      * Fine-tune embedding models for domain-specific search
+      * Implement vector databases and similarity search algorithms
+      * Evaluate and improve context retrieval quality
+      * A/B test different embedding strategies and chunking methods
+    - Tech stack: Python, Cohere, Pinecone, Qdrant, sentence-transformers, NumPy
+    - Requirements: Strong understanding of embeddings, vector databases, and information retrieval
+
+3) AI Research Engineer - Contract
+    - Seniority: Senior (4+ years)
+    - Location: Remote
+    - Responsibilities:
+      * Research state-of-the-art LLM techniques for interview automation
+      * Experiment with prompt engineering and chain-of-thought reasoning
+      * Develop evaluation metrics for AI-generated responses
+      * Prototype new AI features for candidate assessment
+    - Tech stack: Python, GPT-4, Claude, Llama, prompt engineering frameworks
+    - Requirements: Strong research background, experience with LLM APIs, ability to publish findings
+
+4) MLOps Engineer - Full-time
+    - Seniority: Mid to Senior (3+ years)
+    - Location: Remote or Hybrid
+    - Responsibilities:
+      * Build CI/CD pipelines for ML model deployment
+      * Monitor model performance and data drift
+      * Implement A/B testing infrastructure for ML experiments
+      * Optimize inference latency and cost
+      * Manage model versioning and experiment tracking
+    - Tech stack: Docker, Kubernetes, MLflow, W&B, Prometheus, FastAPI
+    - Requirements: Experience deploying ML models to production, strong DevOps skills
+
+5) Data Scientist (AI/ML) - Full-time
+    - Seniority: Mid (2+ years)
+    - Location: Remote
+    - Responsibilities:
+      * Analyze user behavior and interview success metrics
+      * Build predictive models for interview outcomes
+      * Create dashboards and reports on AI system performance
+      * Conduct statistical analysis of matching algorithms
+    - Tech stack: Python, pandas, scikit-learn, SQL, Jupyter, Tableau
+    - Requirements: Strong statistics background, experience with A/B testing, data visualization
+
+How to Apply:
+- Send your resume to careers@example.com with "AI Engineer - [Role Name]" in subject
+- Include a cover letter explaining your AI/ML experience
+- Portfolio or GitHub links showcasing ML projects strongly preferred
+- Research papers or technical blog posts are a plus
+
+Interview Process:
+1. Initial screening call (30 min)
+2. Technical assessment - ML coding challenge
+3. System design interview - AI architecture
+4. Team interview - cultural fit and collaboration
+5. Final round with leadership
+
+Benefits:
+- Competitive salary with equity
+- Remote-first culture
+- Professional development budget
+- Conference attendance support
+- Health insurance and 401k

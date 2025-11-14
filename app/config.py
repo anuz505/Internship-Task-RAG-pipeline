@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     app_name: str = "RAG Hiring Bot with Doc ingestion and Chat API"
     app_version: str = "1.0.0"
     debug: bool = False
+    log_level: str = "INFO"
     host: str = "0.0.0.0"
     port: int = 8000
 
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
     vector_store_type: Literal["pinecone"] = Field(
         default="pinecone", description="pinecone for database"
     )
-    pinecone_api = Optional[str] = Field(
+    pinecone_api_key: Optional[str] = Field(
         default=None, description="api key for pinecone"
     )
     pinecone_environment: Optional[str] = Field(
@@ -36,9 +37,9 @@ class Settings(BaseSettings):
         default="rag-documents", description="Pinecone index name"
     )
 
-    cohere_api_key: str = Field(default=None, description="Cohere API key")
+    cohere_api_key: Optional[str] = Field(default=None, description="Cohere API key")
 
-    groq_api_key: str = Field(default=None, description="Groq api key ")
+    groq_api_key: Optional[str] = Field(default=None, description="Groq api key ")
 
     groq_chat_model: str = Field(
         default="llama-3.3-70b-versatile", description="Groq chat model"
@@ -47,6 +48,10 @@ class Settings(BaseSettings):
     llm_max_tokens: int = Field(default=1000, description="LLM max tokens")
     llm_provider: Literal["groq"] = Field(
         default="groq", description="LLM provider for RAG"
+    )
+
+    similarity_threshold: float = Field(
+        default=0.7, description="Minimum similarity score for search results"
     )
 
     chat_memory_ttl: int = Field(default=3600, description="chat memory TTL in seconds")
@@ -85,6 +90,17 @@ class Settings(BaseSettings):
         if self.redis_password:
             return f"redis://:{self.redis_password}@{self.redis_host}:{self.redis_port}/{self.redis_db}"
         return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"
+
+    # file upload settings
+    max_upload_size: int = Field(
+        default=10 * 1024 * 1024, description="Max file upload size (10MB)"
+    )
+    allowed_extensions: list[str] = Field(
+        default=[".pdf", ".txt"], description="Allowed file extensions"
+    )
+    upload_directory: str = Field(
+        default="./uploads", description="Upload directory path"
+    )
 
 
 settings = Settings()

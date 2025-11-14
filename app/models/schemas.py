@@ -1,5 +1,5 @@
 # here is al the pydantic models for validation
-import datetime
+from datetime import datetime
 from pydantic import BaseModel, Field, EmailStr
 from typing import Literal, Optional
 from uuid import UUID, uuid4
@@ -28,6 +28,40 @@ class Semantic_Chunk_Config(ChunkingStrategy):
 class ChatMessage(BaseModel):
     role: Literal["user", "system", "assistant"] = Field(description="Message role")
     content: str = Field(description="message content or text to llm")
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+
+class ChatRequest(BaseModel):
+    query: str = Field(description="User query", min_length=1)
+    session_id: UUID = Field(
+        default_factory=uuid4, description="Session ID for multi-turn conversation"
+    )
+    top_k: Optional[int] = Field(
+        default=5, ge=1, le=20, description="Number of context chunks to retrieve"
+    )
+
+
+class RetrievedContext(BaseModel):
+    chunk_id: str
+    chunk_text: str
+    filename: str
+    similarity_score: float
+    metadata: dict = Field(default_factory=dict)
+
+
+class ChatResponse(BaseModel):
+    session_id: UUID = Field(description="Session ID")
+    query: str = Field(description="User query")
+    answer: str = Field(description="Generated answer")
+    retrieved_contexts: list[RetrievedContext] = Field(
+        default_factory=list, description="Retrieved context chunks"
+    )
+    booking_detected: bool = Field(
+        default=False, description="Whether booking info was detected"
+    )
+    booking_id: Optional[UUID] = Field(
+        default=None, description="Booking ID if created"
+    )
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 
@@ -86,3 +120,35 @@ class HealthCheckResponse(BaseModel):
     services: dict[str, str] = Field(
         default_factory=dict, description="Service status checks"
     )
+
+
+# ingestion
+class Document_INGESTION_RESPONSE(BaseModel):
+    document_id: UUID = Field(description="Document UUID")
+    filename: str = Field(description="Original filename")
+    total_chunks: int = Field(description="Number of chunks created")
+    chunking_strategy: str = Field(description="Strategy used")
+    vector_store: str = Field(description="Vector store used")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    message: str = Field(default="Document ingested successfully")
+
+
+class DocumentUploadRequest(BaseModel):
+    """Request model for document upload."""
+
+    chunking_strategy: Fixed_length_Chunk_Config | Semantic_Chunk_Config = Field(
+        default_factory=Fixed_length_Chunk_Config,
+        description="Chunking strategy configuration",
+    )
+
+
+class DocumentChunkMetadata(BaseModel):
+    """Metadata for a document chunk."""
+
+    chunk_id: str = Field(description="Unique chunk identifier")
+    document_id: UUID = Field(description="Parent document ID")
+    filename: str = Field(description="Original filename")
+    chunk_index: int = Field(description="Chunk sequence number")
+    chunk_text: str = Field(description="Chunk content")
+    vector_id: str = Field(description="Vector store ID")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
