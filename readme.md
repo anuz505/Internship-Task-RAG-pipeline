@@ -1,105 +1,83 @@
-# 🤖 RAG Hiring Bot - Your AI-Powered Interview Assistant
+# RAG Hiring Bot
 
-> Because manually scheduling interviews is _so_ last decade! 📅✨
+A FastAPI-based system that lets you chat with your documents and automatically handles interview bookings through natural conversation.
 
-Welcome to the RAG (Retrieval-Augmented Generation) Hiring Bot - a production-grade FastAPI backend that doesn't just chat, it _understands_ your documents and can even book interviews for you. Yes, really!
+## Overview
 
-## 🎯 What Does This Thing Do?
+I built this to solve a simple problem: sifting through hiring documents and manually scheduling interviews gets tedious. This bot ingests your PDFs and text files, lets you ask questions about them, and can automatically extract and book interview details when you mention them in conversation.
 
-Ever wished you had an assistant that could:
+The whole thing uses RAG (Retrieval-Augmented Generation) - basically it chunks your documents, converts them to vector embeddings, and retrieves relevant pieces when you ask questions. Then it feeds that context to an LLM to generate responses.
 
-- 📄 **Read your documents** (PDFs and text files) like a speed-reading champion
-- 🧠 **Remember everything** using vector embeddings (fancy AI memory)
-- 💬 **Chat intelligently** about the content with context awareness
-- 📆 **Automatically detect and book interviews** from natural conversation
-- 🔍 **Find relevant information** faster than you can say "Ctrl+F"
+## What It Does
 
-Well, that's exactly what this does! It's like having a super-smart hiring assistant who never sleeps, never forgets, and runs entirely on your machine.
+**Document Processing**
 
-## ✨ Key Features
+- Upload PDFs or text files
+- Choose how to chunk them (fixed-size or semantic - semantic tries to respect sentence/paragraph boundaries)
+- Everything gets embedded using Cohere and stored in Pinecone
 
-### 📚 Document Ingestion
+**Conversational Search**
 
-- **Upload & Process**: Drag and drop PDFs or text files
-- **Smart Chunking**: Choose between:
-  - 🔪 **Simple chunking** - Fixed-size pieces (great for consistency)
-  - 🧩 **Semantic chunking** - Context-aware splitting (respects sentence/paragraph boundaries)
-- **Vector Storage**: Documents get embedded and stored in Pinecone for lightning-fast retrieval
+- Ask questions about your documents in plain English
+- The system finds relevant chunks and uses them to generate answers
+- Chat history is saved in Redis so it remembers your conversation
 
-### 💬 Conversational AI
+**Auto Interview Booking**
 
-- **Context-Aware Chat**: Ask questions about your documents naturally
-- **Memory**: Redis-powered chat history keeps conversations flowing
-- **Smart Retrieval**: Only shows you the most relevant content (no filler!)
+- Just mention booking details in chat like "Book an interview for John at john@email.com on Dec 15 at 2pm"
+- It extracts the name, email, date, and time automatically
+- Saves everything to PostgreSQL
 
-### 🎯 Interview Booking Magic
+**Stack**
 
-- **Natural Language Understanding**: Just say "Book an interview for John at john@email.com on Dec 15 at 2pm"
-- **Automatic Extraction**: The bot detects names, emails, dates, and times
-- **Database Storage**: All bookings saved in PostgreSQL
+- FastAPI for the API
+- PostgreSQL for storing document metadata and bookings
+- Redis for caching chat sessions
+- Pinecone for vector search
+- Cohere for embeddings
+- Groq for the LLM (using Llama 3.3)
+- Docker Compose to run everything
 
-### 🏗️ Production-Ready Architecture
+## Getting Started
 
-- **FastAPI**: Blazing fast async API framework
-- **PostgreSQL**: Reliable metadata and booking storage
-- **Redis**: Chat history caching for speed
-- **Pinecone**: Vector database for semantic search
-- **Docker**: One command to rule them all
+**What you'll need:**
 
-## 🚀 Quick Start
+- Python 3.11 or higher (or just use Docker)
+- API keys from Groq, Cohere, and Pinecone
+- PostgreSQL and Redis if running locally
 
-### Prerequisites
-
-- Python 3.11+ (or just use Docker 🐳)
-- PostgreSQL (or use Docker Compose)
-- Redis (or... you guessed it... Docker Compose)
-- API Keys for:
-  - [Groq](https://console.groq.com/) - For LLM responses
-  - [Cohere](https://cohere.com/) - For embeddings
-  - [Pinecone](https://www.pinecone.io/) - For vector storage
-
-### 🐳 The Easy Way (Docker)
+**Quick setup with Docker:**
 
 ```bash
-# 1. Clone and navigate to the project
 cd "Internship task"
 
-# 2. Create your .env file in the app/ directory
-# (See "Environment Setup" section below)
+# Create app/.env with your config (see below)
 
-# 3. Fire up everything
 docker-compose up --build
 
-# 4. Visit http://localhost:8000/docs
-# 🎉 You're live!
+# API docs at http://localhost:8000/docs
 ```
 
-### 🛠️ The Manual Way (Local Development)
+**Running locally:**
 
 ```bash
-# 1. Create a virtual environment
+# Virtual environment
 python -m venv myvenv
-.\myvenv\Scripts\Activate.ps1  # Windows PowerShell
-# or: source myvenv/bin/activate  # Linux/Mac
+.\myvenv\Scripts\Activate.ps1  # Windows
+# source myvenv/bin/activate    # Linux/Mac
 
-# 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Set up environment variables
-# Create app/.env with your API keys (see below)
+# Set up app/.env with your keys
 
-# 4. Start PostgreSQL and Redis
-# (Use Docker or install locally)
+# Start PostgreSQL and Redis
 
-# 5. Run the application
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# 6. Open http://localhost:8000/docs
 ```
 
-## 🔐 Environment Setup
+## Environment Setup
 
-Create a file `app/.env` with these variables:
+Create `app/.env`:
 
 ```env
 # Application Settings
@@ -144,17 +122,15 @@ ALLOWED_EXTENSIONS=[".pdf", ".txt"]
 UPLOAD_DIRECTORY=./uploads
 ```
 
-## 📡 API Endpoints
+## API Endpoints
 
-### 🏠 Health Check
+### Health Check
 
 ```http
 GET /
 ```
 
-Returns system status and configured services.
-
-### 📥 Document Ingestion
+### Upload Documents
 
 ```http
 POST /api/ingest
@@ -180,7 +156,7 @@ Response:
 }
 ```
 
-### 💬 Chat with Documents
+### Chat
 
 ```http
 POST /api/chat
@@ -203,7 +179,7 @@ Response:
 }
 ```
 
-**Pro Tip**: To book an interview, just ask naturally:
+To book an interview, just mention it:
 
 ```json
 {
@@ -211,7 +187,7 @@ Response:
 }
 ```
 
-### 📅 View Bookings
+### Bookings
 
 ```http
 GET /api/bookings
@@ -233,38 +209,22 @@ Response:
 }
 ```
 
-### 🔍 Get Specific Booking
-
 ```http
 GET /api/bookings/{booking_id}
 ```
 
-## 🏗️ Architecture
+## Architecture
 
-```
-┌─────────────┐
-│   FastAPI   │ ← Your API Gateway
-└──────┬──────┘
-       │
-   ┌───┴────┬─────────┬──────────┐
-   │        │         │          │
-┌──▼───┐ ┌─▼────┐ ┌──▼─────┐ ┌──▼────────┐
-│ PDFs │ │Redis │ │Postgres│ │ Pinecone  │
-│ TXTs │ │Cache │ │   DB   │ │  Vectors  │
-└──────┘ └──────┘ └────────┘ └───────────┘
-```
+The flow is pretty straightforward:
 
-**Tech Stack:**
+1. **Document Upload** → Chunks text → Generates embeddings → Stores in Pinecone
+2. **Chat Query** → Embeds query → Searches Pinecone for similar chunks → Feeds to LLM → Returns answer
+3. **Session History** → Stored in Redis for context
+4. **Bookings** → Extracted by LLM, saved to PostgreSQL
 
-- **FastAPI**: Lightning-fast async Python framework
-- **SQLAlchemy**: ORM for PostgreSQL interactions
-- **Pinecone**: Vector database for semantic search
-- **Cohere**: Embedding generation
-- **Groq**: LLM inference (crazy fast!)
-- **Redis**: Session & chat history caching
-- **Docker**: Containerization for easy deployment
+Built with FastAPI, PostgreSQL, Redis, Pinecone, Cohere, and Groq. Everything runs in Docker containers for easy deployment.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 .
@@ -288,9 +248,9 @@ GET /api/bookings/{booking_id}
 └── requirements.txt        # Python dependencies
 ```
 
-## 🎮 Usage Examples
+## Examples
 
-### Upload a Document
+**Upload a document:**
 
 ```bash
 curl -X POST "http://localhost:8000/api/ingest" \
@@ -299,7 +259,7 @@ curl -X POST "http://localhost:8000/api/ingest" \
   -F "split_by=sentence"
 ```
 
-### Chat About It
+**Ask questions:**
 
 ```bash
 curl -X POST "http://localhost:8000/api/chat" \
@@ -311,7 +271,7 @@ curl -X POST "http://localhost:8000/api/chat" \
   }'
 ```
 
-### Book an Interview (Naturally!)
+**Book an interview:**
 
 ```bash
 curl -X POST "http://localhost:8000/api/chat" \
@@ -321,63 +281,26 @@ curl -X POST "http://localhost:8000/api/chat" \
   }'
 ```
 
-## 🔧 Configuration
+## Configuration
 
-All settings are in `app/config.py` and can be overridden via environment variables. Key configurations:
+Settings in `app/config.py` can be overridden with environment variables:
 
-- **Chunking**: Adjust `simple_chunk_size`, `simple_chunk_overlap`
-- **Similarity Threshold**: `similarity_threshold` (default: 0.7)
-- **Chat Memory**: `chat_memory_ttl`, `max_messages_per_session`
-- **Upload Limits**: `max_upload_size`, `allowed_extensions`
+- Chunking: `simple_chunk_size`, `simple_chunk_overlap`
+- Similarity threshold: `similarity_threshold` (default: 0.7)
+- Chat memory: `chat_memory_ttl`, `max_messages_per_session`
+- File uploads: `max_upload_size`, `allowed_extensions`
 
-## 🐛 Troubleshooting
+## Possible Improvements
 
-**Database connection errors?**
+Some things I'd add if I had more time:
 
-- Check your PostgreSQL is running: `docker ps`
-- Verify `POSTGRES_HOST` in your .env
+- A proper frontend instead of just API docs
+- Email notifications when interviews are booked
+- User authentication
+- Support for more file types (DOCX, HTML, etc.)
+- Better error handling and logging
+- Tests
 
-**Redis connection issues?**
+## License
 
-- Ensure Redis container is up
-- Check `REDIS_HOST` and `REDIS_PORT`
-
-**Pinecone errors?**
-
-- Verify your API key is correct
-- Ensure the index name matches in Pinecone console
-- Check your Pinecone environment region
-
-**LLM not responding?**
-
-- Validate your Groq API key
-- Check rate limits on your Groq account
-
-## 🚀 What's Next?
-
-Want to extend this? Here are some ideas:
-
-- 🎨 Add a frontend UI (React, Vue, or Svelte)
-- 📧 Send email confirmations for bookings
-- 🔒 Add authentication & authorization
-- 📊 Build an analytics dashboard
-- 🌐 Support more file types (DOCX, HTML, etc.)
-- 🧪 Add comprehensive test coverage
-
-## 📝 License
-
-This is an internship task project. Feel free to learn from it, extend it, and make it your own!
-
-## 🙌 Credits
-
-Built with ❤️ using:
-
-- [FastAPI](https://fastapi.tiangolo.com/)
-- [Pinecone](https://www.pinecone.io/)
-- [Cohere](https://cohere.com/)
-- [Groq](https://groq.com/)
-- And a lot of coffee ☕
-
----
-
-**Happy Coding!** 🎉 If you found this useful, star it, share it, or just smile knowing that somewhere, someone automated their interview scheduling. 😊
+MIT - use it however you want.
